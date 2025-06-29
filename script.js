@@ -37,6 +37,7 @@ function drawClock() {
   ctx.strokeStyle = "#0a485e";
   ctx.stroke();
 
+  // Draw all segments first
   activities.forEach((act, index) => {
     const startAngle = (timeToDecimal(act.start) / 24) * 2 * Math.PI - Math.PI / 2;
     const endAngle = (timeToDecimal(act.end) / 24) * 2 * Math.PI - Math.PI / 2;
@@ -53,17 +54,25 @@ function drawClock() {
     ctx.closePath();
     ctx.fillStyle = act.color;
     ctx.fill();
-
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#e7f1e7";
-    ctx.stroke();
-
-    if (index === selectedIndex) {
-      ctx.strokeStyle = "#ff9800";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-    }
+    ctx.stroke();  // FIXME: this overlaps the centre ever so slightly
   });
+
+  // Redraws the selected activity to ensure border is on top
+  if (selectedIndex !== null && activities[selectedIndex]) {
+    const act = activities[selectedIndex];
+    const startAngle = (timeToDecimal(act.start) / 24) * 2 * Math.PI - Math.PI / 2;
+    const endAngle = (timeToDecimal(act.end) / 24) * 2 * Math.PI - Math.PI / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0, 0, radius - 10, startAngle, endAngle);
+    ctx.closePath();
+    ctx.strokeStyle = "#ff9800";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
 
   // hour labels
   ctx.fillStyle = "#0a485e";

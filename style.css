@@ -1,0 +1,127 @@
+body {
+  margin: 0;
+  background-color: #e7f1e7;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding-top: 50px;
+  text-align: center;
+}
+
+h1 {
+  color: #0a485e;
+  margin-bottom: 30px;
+  font-size: xx-large;
+}
+
+.planner {
+  display: flex;
+  justify-content: center;
+  gap: 200px;
+  padding-top: 50px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.clock-wrapper {
+  position: relative;
+  width: 600px;
+  height: 600px;
+}
+
+canvas {
+  border: 3px solid #0a485e;
+  border-radius: 50%;
+  background-color: #e7f1e7;
+}
+
+.activity-panel {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.input-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+
+input, button {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 135px;
+}
+
+button {
+  background-color: #0a485e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 135px;
+}
+
+button:hover {
+  background-color: #083b4e;
+}
+
+.separator {
+  width: 100%;
+  border-top: 4px double #0a485e;
+  margin: 20px 0;
+}
+
+.summary-title {
+  font-weight: bold;
+  color: #0a485e;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+#scheduleList {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 340px;
+  text-align: left;
+}
+
+#scheduleList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.activity-display {
+  display: flex;
+  align-items: center;
+}
+
+.time-text {
+  min-width: 100px;
+  display: inline-block;
+}
+
+.color-box {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.selected-activity {
+  outline: 2px dashed #ff9800;
+  outline-offset: -5px;
+}

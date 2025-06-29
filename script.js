@@ -7,28 +7,6 @@ let activities = JSON.parse(localStorage.getItem('dailyActivities')) || [];
 let selectedIndex = null;
 let segments = [];
 
-let colorPickerActivityIndex = null;
-let selectedColor = null;
-
-const colours = {
-  "sleep": "#6a8caf",
-  "study": "#d8c8f8",
-  "noodle": "#c8d8f8"
-};
-const otherColours = ['#a8d8a8', '#f8c8c8', '#f8e8c8'];
-let colourMap = {};
-let colourIndex = 0;
-
-function assignColor(name) {
-  const key = name.toLowerCase();
-  if (colours[key]) return colours[key];
-  if (!colourMap[key]) {
-    colourMap[key] = otherColours[colourIndex % otherColours.length];
-    colourIndex++;
-  }
-  return colourMap[key];
-}
-
 function drawClock() {
   ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
   segments = [];
@@ -55,7 +33,7 @@ function drawClock() {
     ctx.moveTo(0,0);
     ctx.arc(0, 0, radius - 10, startAngle, endAngle);
     ctx.closePath();
-    ctx.fillStyle = act.color;
+    ctx.fillStyle = act.colour;
     ctx.fill();
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#e7f1e7";
@@ -163,8 +141,8 @@ function addActivity() {
     return;
   }
 
-  const color = assignColor(name);
-  activities.push({ name, start, end, color });
+  const colour = assignColour(name);
+  activities.push({ name, start, end, colour });
   saveAndRefresh();
 
   document.getElementById('activityName').value = ''; // emptying fields
@@ -222,7 +200,7 @@ function updateSchedule() {
     row.innerHTML = `
       <span class="activity-display" style="display: flex; align-items: center;">
         <span style="display: inline-block; width: 80px;">${act.start} - ${act.end}</span>
-        <span class="color-box" style="background-color: ${act.color}" onclick="openColorPicker(${act.originalIndex})" title="Click to change color"></span>
+        <span class="colour-box" style="background-color: ${act.colour}" onclick="openColourPicker(${act.originalIndex})" title="Click to change colour"></span>
         <span style="flex: 1;">${act.name}</span>
       </span>`;
     list.appendChild(row);
@@ -234,79 +212,10 @@ function timeToDecimal(timeStr) {
   return h + m / 60;
 }
 
-// Color picker functions
-function getAllAvailableColors() {
-  const defaultColors = Object.values(colours);
-  const usedColors = Object.values(colourMap);
-  const allColors = [...defaultColors, ...otherColours, ...usedColors];
-  
-  // Remove duplicates
-  return [...new Set(allColors)];
-}
-
-function openColorPicker(activityIndex) {
-  colorPickerActivityIndex = activityIndex;
-  selectedColor = activities[activityIndex].color;
-  
-  const modal = document.getElementById('colorPickerModal');
-  const colorGrid = document.getElementById('colorGrid');
-  
-  // Clear existing colors
-  colorGrid.innerHTML = '';
-  
-  // Get all available colors
-  const availableColors = getAllAvailableColors();
-  
-  // Create color options
-  availableColors.forEach(color => {
-    const colorOption = document.createElement('div');
-    colorOption.className = 'color-option';
-    colorOption.style.backgroundColor = color;
-    
-    if (color === selectedColor) {
-      colorOption.classList.add('selected');
-    }
-    
-    colorOption.addEventListener('click', () => {
-      // Remove selected class from all options
-      document.querySelectorAll('.color-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      
-      // Add selected class to clicked option
-      colorOption.classList.add('selected');
-      selectedColor = color;
-    });
-    
-    colorGrid.appendChild(colorOption);
-  });
-  
-  modal.style.display = 'flex';
-}
-
-function closeColorPicker() {
-  const modal = document.getElementById('colorPickerModal');
-  modal.style.display = 'none';
-  colorPickerActivityIndex = null;
-  selectedColor = null;
-}
-
-function applyColorChange() {
-  if (colorPickerActivityIndex !== null && selectedColor) {
-    activities[colorPickerActivityIndex].color = selectedColor;
-    saveAndRefresh();
-  }
-  closeColorPicker();
-}
-
 canvas.addEventListener("click", clockClicker);
 
-// Close color picker when clicking outside the modal
-document.getElementById('colorPickerModal').addEventListener('click', (e) => {
-  if (e.target.id === 'colorPickerModal') {
-    closeColorPicker();
-  }
-});
+// Initialize colour picker when DOM is loaded
+initializeColourPicker();
 
 updateSchedule();
 drawClock();
